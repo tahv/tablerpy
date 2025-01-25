@@ -1,0 +1,106 @@
+[project]
+name = "tablerpy"
+description = "Tabler Icons library for Python"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+authors = [{ name = "Thibaud Gambier" }]
+dynamic = ["version"]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = ["importlib_resources ; python_version < '3.10'"]
+
+[dependency-groups]
+dev = [
+  { include-group = "cov" },
+  { include-group = "mypy" },
+  { include-group = "test" },
+]
+cov = ["coverage>=7.2.7"]
+mypy = ["mypy>=1.4.1", { include-group = "test" }]
+test = ["pytest>=7.4.4"]
+
+[build-system]
+requires = ["setuptools>=61", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+local_scheme = "no-local-version"
+
+[tool.uv]
+default-groups = []
+
+[tool.mypy]
+files = ["src", "tests"]
+disallow_untyped_defs = true
+check_untyped_defs = true
+disallow_any_unimported = true
+no_implicit_optional = true
+warn_return_any = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+show_error_codes = true
+# disallow_any_generics = true
+# implicit_reexport = false
+
+[tool.coverage]
+run.source = ["src/"]
+run.branch = true
+report.show_missing = true
+report.skip_covered = true
+report.exclude_lines = [
+  "# pragma: no cover",
+  "if (False|0|TYPE_CHECKING):",
+  "if __name__ == ['\"]__main__['\"]:",
+]
+paths.source = ["src/", "*/src"]
+
+[tool.ruff]
+src = ["src"]
+include = ["src/**/*.py", "tests/**/*.py", "**/pyproject.toml"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+pydocstyle.convention = "google"
+flake8-tidy-imports.ban-relative-imports = "all"
+isort.required-imports = ["from __future__ import annotations"]
+ignore = [
+  "D100",   # Missing docstring in public module
+  "D104",   # Missing docstring in public package
+  "D105",   # Missing docstring in magic method
+  "D107",   # Missing docstring in `__init__`
+  "FIX002", # Line contains TODO, consider resolving the issue
+  "TD002",  # Missing author in TODO
+  "TD003",  # Missing issue link on the line following this TODO
+]
+unfixable = [
+  "ERA001", # Found commented-out code
+  "F401",   # Unused import
+]
+
+[tool.ruff.lint.per-file-ignores]
+"src/tablerpy/outline.py" = [
+  "D101", # Missing docstring in public class
+  "I002", # Missing required import
+  "S105", # Possible hardcoded password assigned
+]
+"src/tablerpy/filled.py" = [
+  "D101", # Missing docstring in public class
+  "I002", # Missing required import
+]
+"tests/**/test_*.py" = [
+  "D103",    # Missing docstring in public function
+  "INP001",  # File is part of an implicit namespace package. Add an `__init__.py`
+  "PLR0913", # Too many arguments in function definition
+  "PLR2004", # Magic value used in comparison, consider replacing with a constant variable
+  "PT004",   # Fixture does not return anything, add leading underscore
+  "S101",    # Use of assert detected
+]
