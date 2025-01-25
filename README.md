@@ -7,11 +7,10 @@
 
 [Tabler Icons](https://github.com/tabler/tabler-icons) library for Python.
 
-> [!NOTE]
-> Tabler Icons is a set of free MIT-licensed high-quality SVG icons.
-> Each icon is designed on a 24x24 grid and a 2px stroke.
+> _Tabler Icons is a set of free MIT-licensed high-quality SVG icons.
+> Each icon is designed on a 24x24 grid and a 2px stroke._
 >
-> **[Browse at tabler.io/icons →](https://tabler.io/icons)**
+> _**[Browse at tabler.io/icons →](https://tabler.io/icons)**_
 
 ## Installation
 
@@ -31,11 +30,10 @@ outline_icon_path = get_icon(OutlineIcon.BRAND_GITHUB)
 filled_icon_path = get_icon(FilledIcon.BRAND_GITHUB)
 ```
 
-> [!NOTE]
-> Icon names match those on tabler.io/icons,
-> except they are uppercased and hyphens `-` are replaced with underscores `_`.
-> For example, [`brand-github`](https://tabler.io/icons/icon/brand-github)
-> becomes `BRAND_GITHUB`.
+Icon names match those on _tabler.io/icons_,
+except they are uppercased and hyphens `-` are replaced with underscores `_`.
+For example, [`brand-github`](https://tabler.io/icons/icon/brand-github)
+becomes `BRAND_GITHUB`.
 
 ## Contributing
 
