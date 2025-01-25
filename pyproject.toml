@@ -65,7 +65,12 @@ paths.source = ["src/", "*/src"]
 
 [tool.ruff]
 src = ["src"]
-include = ["src/**/*.py", "tests/**/*.py", "**/pyproject.toml"]
+include = [
+  "src/**/*.py",
+  "tests/**/*.py",
+  "scripts/**/*.py",
+  "**/pyproject.toml",
+]
 
 [tool.ruff.lint]
 select = ["ALL"]

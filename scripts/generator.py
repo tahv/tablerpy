@@ -26,38 +26,33 @@ logger = logging.getLogger("tablerpy-generator")
 
 def main(args: Sequence[str] | None = None) -> None:
     """Command line entry-point."""
-    namespace = parse_args(args)
-
-    version: str = namespace.version
-    package: Path = namespace.package
-
     logging.basicConfig(
         format="%(asctime)s %(levelname)-8s %(name)s :: %(message)s",
         datefmt="%H:%M:%S",
         level=logging.DEBUG,
     )
 
-    requested = RequestedTag(
-        version=version,
-        packs=[
-            IconPack(
-                icons_archive_dir=Path("svg/filled"),
-                icons_extract_dir=package / "icons" / "filled",
-                enum_name="FilledIcon",
-                enum_py=package / "filled.py",
-            ),
-            IconPack(
-                icons_archive_dir=Path("svg/outline"),
-                icons_extract_dir=package / "icons" / "outline",
-                enum_name="OutlineIcon",
-                enum_py=package / "outline.py",
-            ),
-        ],
-    )
+    namespace = parse_args(args)
+    version: str = namespace.version
+    package: Path = namespace.package
+    packs = [
+        IconPack(
+            icons_archive_dir=Path("svg/filled"),
+            icons_extract_dir=package / "icons" / "filled",
+            enum_name="FilledIcon",
+            enum_py=package / "filled.py",
+        ),
+        IconPack(
+            icons_archive_dir=Path("svg/outline"),
+            icons_extract_dir=package / "icons" / "outline",
+            enum_name="OutlineIcon",
+            enum_py=package / "outline.py",
+        ),
+    ]
 
-    download_tabler_icons(requested)
+    download_tabler_icons(version=version, packs=packs)
 
-    for pack in requested.packs:
+    for pack in packs:
         logger.info("Writing enum file '%s'", pack.enum_py)
         pack.enum_py.parent.mkdir(parents=True, exist_ok=True)
         with pack.enum_py.open("wt") as f:
@@ -68,7 +63,7 @@ def main(args: Sequence[str] | None = None) -> None:
                 f.write(f'    {key} = "{value}"\n')
 
 
-def parse_args(args: Sequence[str] | None) -> argparse.Namespace:
+def parse_args(args: Sequence[str] | None) -> argparse.Namespace:  # noqa: D103
     parser = argparse.ArgumentParser(
         description=(
             "Download Tabler Icons release from github.com/tabler/tabler-icons "
@@ -89,31 +84,35 @@ def parse_args(args: Sequence[str] | None) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
-class TagNotFound(Exception):
+class TagNotFoundError(Exception):
     """Raised when a tag is requested but is not available."""
 
 
 @dataclass(frozen=True)
 class IconPack:
+    """Icons pack information."""
+
     icons_archive_dir: Path
+    """Relative path to icon directory in archive."""
+
     icons_extract_dir: Path
+    """Extraction destination directory."""
+
     enum_name: str
+    """Class name for generated `enum.Enum`."""
+
     enum_py: Path
+    """Python file to write generated enum."""
 
 
-@dataclass
-class RequestedTag:
-    version: str
-    packs: list[IconPack]
-
-
-def download_tabler_icons(requested: RequestedTag) -> None:
+def download_tabler_icons(version: str, packs: list[IconPack]) -> None:
+    """Download tabler-icons ``version`` and extract ``packs``."""
     github_api = "https://github.com/{owner}/{repo}/releases/download/{tag}/{asset}"
     url = github_api.format(
         owner="tabler",
         repo="tabler-icons",
-        tag=f"v{requested.version}",
-        asset=f"tabler-icons-{requested.version}.zip",
+        tag=f"v{version}",
+        asset=f"tabler-icons-{version}.zip",
     )
 
     with tempfile.TemporaryDirectory(prefix="tabler-") as tmpdir:
@@ -126,12 +125,12 @@ def download_tabler_icons(requested: RequestedTag) -> None:
             )
         except HTTPError as exc:
             if exc.code == 404:  # noqa: PLR2004
-                raise TagNotFound(requested.version) from exc
+                raise TagNotFoundError(version) from exc
             raise
 
         unzip(archive=archive, directory=tmpdir, overwrite=True)
 
-        for pack in requested.packs:
+        for pack in packs:
             src = Path(tmpdir) / pack.icons_archive_dir
             dst = pack.icons_extract_dir
 
