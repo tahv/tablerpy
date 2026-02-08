@@ -1,3 +1,8 @@
+> [!WARNING]  
+> tablerpy is now **archived** and will no longer receive updates.
+> As of release `3.29.0`, Tabler Icons no longer provides zip archives in its releases
+> See https://github.com/tabler/tabler-icons/issues/1371.
+
 # tablerpy
 
 [![PyPI - Version](https://img.shields.io/pypi/v/tablerpy?logo=pypi&label=PyPI&logoColor=white)](https://pypi.org/project/tablerpy/)
